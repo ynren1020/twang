@@ -1,6 +1,13 @@
-#######################2019-08-12###############################
+#######################2019-08-12######################################################################################
 ##align cohort feature count results' colname with ty's result##
-################################################################
+##Tricks learned from this script: When do data frame transpose, 
+##the important thing to remember is that we should make sure the cells (or each element in the df) 
+##are numeric values, usually, in data frame, we also have some other variables as factors or characters,
+##remove it or transform it to rownames, or keep it separately. In our case here, we transform the character 
+##column as rownames, and then remove that column, after this procedure, all cells are numeric, and then transform 
+##the df to matrix by as.matrix, and then transpose it by t(),if we want to transform matrix back to df, 
+##we can do as.data.frame(), and now the previous rownames of old df becomes the colnames of new df.
+###############################################################################################################################
 
 library(dplyr)
 
@@ -32,7 +39,7 @@ dfT$fileid<-rownames(dfT)
 dfT.join<-left_join(dfT,meta,by="fileid")
 ##col3 and col1##
 dfT.join.sub<-dfT.join[,c(3,1)]
-#names(dfT.join.sub)<-NULL  #also removed first row??
+
 ##IMPORTANT LESSONS HERE:DATA FRAME TRANSPOSE SHOULD BE DONE WITH NUMERIC CELLS, OTHER CELLS REMOVE OR USE AS ROWNAMES, LIKE HERE##
 ##CHOOSE COLUMN TO MAKE IT AS ROWNAMES, MAKE NUMERIC DF AS MATRIX AND THEN DO TRANSPOSE, NOW THE COLNAME IS PREVIOUS ROWNAME
 rownames(dfT.join.sub)<-dfT.join.sub$ALIQUOT_BARCODE
@@ -40,10 +47,6 @@ dfT.join.sub$ALIQUOT_BARCODE<-NULL
 dfT.join.sub.mat<-t(as.matrix(dfT.join.sub))
 ##first row as column names##
 dfT.join.sub.mat.out<-as.data.frame(dfT.join.sub.mat)
-#names(dfT.join.sub.mat.out) <- as.character(unlist(dfT.join.sub.mat.out[1,]))
-#dfT.join.sub.mat.out<-dfT.join.sub.mat.out[-1,]
-##factor to integer##
-#dfT.join.sub.mat.out[] <- as.integer(as.character((unlist(dfT.join.sub.mat.out, use.names = FALSE))))
 dfT.join.sub.mat.out$GeneID<-"PB.69"
 dfT.join.sub.mat.out$Length <-3460
 ##reorder column##
